@@ -1,5 +1,5 @@
-# 戻り値の形式(errorcode <str>,hash <str,すべて小文字>,checker <bool>,errormsg)
 # 渡されるパラーメーターの形式(filePath <str, 絶対パスで指定>,currentHash <str>,algorithm <int>)
+# 戻り値の形式(errorcode <str>,hash <str,すべて小文字>,checker <bool>,errormsg)
 
 # errorcode一覧
 errorMsgs = {"00": "#00 正常終了(ハッシュ合致)",

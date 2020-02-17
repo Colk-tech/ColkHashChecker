@@ -1,38 +1,27 @@
 # (C) 2020 Colk All rights reserved.
 
+# いつものライブラリ
 import sys
 import os
-import time
 
-# pipのライブラリ
+# tkinter関連のライブラリ
 import tkinter
 from tkinter import ttk
 import tkinter.filedialog
 
 # 自作ライブラリ
 from filhas import *
+from mainlib import *
 
 # globalで使う変数を定めておく
 algorithms = ["MD5","sha256","sha512"]
-
-
-def fileDialog():
-    global filePath
-    fTyp = [("", "*")]
-    iDir = os.path.abspath(os.path.dirname(__file__))
-    filePath = tkinter.filedialog.askopenfilename(
-        filetypes=fTyp, initialdir=iDir)
-
-# 計算するときに呼び出されるやつ
-def calculate(progressPage,resultPage):
-    input()
-    progressPage.tkraise()
-    resultPage.tkraise()
+global filePath
 
 def main():
 
     # 変数定義
     global algorithms
+    global filePath
 
     # -----------------------------------rootのwindow--------------------------------- #
 
@@ -128,7 +117,8 @@ def main():
 
     # 「次へ」ボタンを設定
     progressButton = ttk.Button(contentsPage, text="Next",
-                                command = lambda: calculate(progressPage,resultPage))
+                                command = lambda: debpagechan(resultPage,errResultPage,calculatedText,userHashText,errCalculatedText,errUserHashText))
+                                #command = lambda: calculate(window,progressPage,resultPage))
 
 
     ######################### contentsPageのコンポーネントを配置する #########################
@@ -167,6 +157,7 @@ def main():
 
     # -----------------------------------progressPage--------------------------------- #
 
+
     # progressPageのFrameを生成
     progressPage = tkinter.Frame(window)
 
@@ -192,52 +183,86 @@ def main():
     # progressPageを配置する
     progressPage.grid(row=0, column=0, sticky="nsew")
 
-
     # -----------------------------------resultPage--------------------------------- #
 
-
-    # contentsPageのFrameを生成
+    # ハッシュが合致した場合のresultPageのFrameを生成
     resultPage = tkinter.Frame(window)
 
-    # 計算完了ラベルの設定
+    # 結果表示ラベルの設定
     finishMessageLabel = ttk.Label(resultPage,
-                                   text = "Calculated!", font = ("Meiryo UI", 16, "bold"))
+                                      text="Calculated!", font=("Meiryo UI", 16, "bold"))
 
     # 計算されたファイルハッシュを表示するラベルの設定
     calculatedText = tkinter.StringVar()
     calculatedText.set("Calculated file hash:")
     calculatedHashLabel = ttk.Label(resultPage,
-                                    textvariable = calculatedText)
+                                    textvariable=calculatedText)
 
-    #ユーザーから入力されたハッシュを表示するラベルの設定
+    # ユーザーから入力されたハッシュを表示するラベルの設定
     userHashText = tkinter.StringVar()
     userHashText.set("Entered file hash:")
     userHashLabel = ttk.Label(resultPage,
-                              textvariable = userHashText)
+                              textvariable=userHashText)
 
-    # 照合結果を表示してくれるラベルの設定
-    resultText = tkinter.StringVar()
-    resultText.set("")
-    resultLabel = ttk.Label(resultPage,
-                            textvariable = resultText)
-
-    ######################### contentsPageのコンポーネントを配置する #########################
+    ######################### resultPageのコンポーネントを配置する #########################
 
     # 空白
     for n in range(3):
         tkinter.Label(resultPage, text="").pack()
 
-    # 計算完了ラベルを配置
+    # 結果表示ラベルを配置
+    finishMessageLabel.pack()
+
+    # 計算されたハッシュを表示するラベルを配置
     calculatedHashLabel.pack()
 
     # 入力されたハッシュを表示するラベルを配置
     userHashLabel.pack()
 
-    # 照合結果を表示してくれるラベルを配置
-    resultLabel.pack()
-
     # resultPageを配置する
     resultPage.grid(row=0, column=0, sticky="nsew")
+
+
+
+    # -----------------------------------errResultPage--------------------------------- #
+
+
+    # ハッシュが合致しなかった場合のerrResultPageのFrameを生成
+    errResultPage = tkinter.Frame(window)
+
+    # 結果表示ラベルの設定
+    errFinishMessageLabel = ttk.Label(errResultPage,
+                                   text = "Calculated!", font = ("Meiryo UI", 16, "bold"))
+
+    # 計算されたファイルハッシュを表示するラベルの設定
+    errCalculatedText = tkinter.StringVar()
+    errCalculatedText.set("Calculated file hash:")
+    errCalculatedHashLabel = ttk.Label(errResultPage,
+                                    textvariable = calculatedText)
+
+    #ユーザーから入力されたハッシュを表示するラベルの設定
+    errUserHashText = tkinter.StringVar()
+    errUserHashText.set("Entered file hash:")
+    errUserHashLabel = ttk.Label(errResultPage,
+                              textvariable = userHashText)
+
+    ######################### errResultPageのコンポーネントを配置する #########################
+
+    # 空白
+    for n in range(3):
+        tkinter.Label(errResultPage, text="").pack()
+
+    # 結果表示ラベルを配置
+    errFinishMessageLabel.pack()
+
+    # 計算されたハッシュを表示するラベルを配置
+    errCalculatedHashLabel.pack()
+
+    # 入力されたハッシュを表示するラベルを配置
+    errUserHashLabel.pack()
+
+    # errResultPageを配置する
+    errResultPage.grid(row=0, column=0, sticky="nsew")
 
 
     ###DO NOT CHANGE HERE###

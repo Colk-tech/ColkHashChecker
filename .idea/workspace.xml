@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="701f5586-dab9-46b3-bb21-7b80afa7338d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/filhas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hashcalc.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/filhas.py" beforeDir="false" afterPath="$PROJECT_DIR$/filhas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hashcalcOld.py" beforeDir="false" afterPath="$PROJECT_DIR$/hashcalcOld.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,7 +34,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.filhas">
     <configuration name="cambus" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="GUIHashChecker" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -49,6 +49,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/cambus.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="filhas" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="GUIHashChecker" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/filhas.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -125,6 +147,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.filhas" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.mainOld" />
         <item itemvalue="Python.cambus" />
@@ -147,6 +170,8 @@
       <workItem from="1581868940472" duration="12000" />
       <workItem from="1581869000415" duration="221000" />
       <workItem from="1581869230979" duration="9312000" />
+      <workItem from="1581881507873" duration="138000" />
+      <workItem from="1581917315487" duration="5967000" />
     </task>
     <task id="LOCAL-00001" summary="Checked some issues">
       <created>1581416725272</created>
@@ -187,38 +212,43 @@
     <option name="LAST_COMMIT_MESSAGE" value="Refactored source code with autopep8 at issue #3" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1581881412627">
+    <state width="1493" height="138" key="GridCell.Tab.0.bottom" timestamp="1581924818039">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581881412627" />
+    <state width="1493" height="138" key="GridCell.Tab.0.bottom/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581924818039" />
     <state width="1342" height="195" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581868848123" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1581881412627">
+    <state width="1493" height="138" key="GridCell.Tab.0.center" timestamp="1581924818038">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581881412627" />
+    <state width="1493" height="138" key="GridCell.Tab.0.center/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581924818038" />
     <state width="1342" height="195" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581868848123" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1581881412627">
+    <state width="1493" height="138" key="GridCell.Tab.0.left" timestamp="1581924818038">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581881412627" />
+    <state width="1493" height="138" key="GridCell.Tab.0.left/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581924818038" />
     <state width="1342" height="195" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581868848123" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1581881412627">
+    <state width="1493" height="138" key="GridCell.Tab.0.right" timestamp="1581924818038">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581881412627" />
+    <state width="1493" height="138" key="GridCell.Tab.0.right/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581924818038" />
     <state width="1342" height="195" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581868848123" />
-    <state x="477" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1581869233160">
+    <state width="498" height="446" key="SwitcherDM" timestamp="1581920570640">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="498" height="446" key="SwitcherDM/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581920570640" />
+    <state x="477" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1581917319963">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="477" y="240" key="com.intellij.ide.util.TipDialog/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581917319963" />
     <state x="477" y="240" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581869233160" />
     <state x="-6" y="0" width="781" height="830" key="dock-window-1" timestamp="1581869599972">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="-6" y="0" width="781" height="830" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1581869599972" />
-    <state x="-687" y="165" width="694" height="735" key="dock-window-2" timestamp="1581869801424">
+    <state x="-687" y="165" width="694" height="735" key="dock-window-2" timestamp="1581917333769">
       <screen x="-1360" y="165" width="1360" height="718" />
     </state>
-    <state x="-687" y="165" width="694" height="735" key="dock-window-2/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581869801424" />
+    <state x="-687" y="165" width="694" height="735" key="dock-window-2/-1360.165.1360.718/0.0.1536.824@0.0.1536.824" timestamp="1581917333769" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -232,8 +262,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ColkHashChecker$main.coverage" NAME="main Coverage Results" MODIFIED="1581881381016" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ColkHashChecker$main.coverage" NAME="main Coverage Results" MODIFIED="1581922667159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GUIHashChecker$main.coverage" NAME="main Coverage Results" MODIFIED="1581867596643" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ColkHashChecker$mainOld.coverage" NAME="mainOld Coverage Results" MODIFIED="1581877483600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ColkHashChecker$filhas.coverage" NAME="filhas Coverage Results" MODIFIED="1581924818028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
