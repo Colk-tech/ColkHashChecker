@@ -5,6 +5,9 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter.ttk import *
 
+# 抽象クラス使用
+from abc import ABCMeta, abstractmethod
+
 # 自作モジュール
 from hashcalc import mainCalc
 
@@ -20,20 +23,39 @@ class Root:
         self.window.geometry("460x335")
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
+
+        # 静的なページを先に初期化
         Data.pages = {
             "start" : StartPage(self.window),
             "contents" : ContentsPage(self.window)
         }
+
+        # startページを先に呼び出す
         Data.pages["start"].frame.tkraise()
         self.window.mainloop()
 
 
-class StartPage:
+class Page(metaclass=ABCMeta):
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def _next_page(self):
+        pass
+
+
+class StartPage(Page):
+    """
+    1版最初のページ
+    hashのアルゴリズムを選ぶ場所
+    """
     def __init__(self, r: Tk):
         """
-        Param:
-            root: 基盤となるwindow
+        Args:
+            r(tk.Tk): tk.Tk()で取得できるwindow
         """
+        super().__init__()
         self.frame = Frame(r)
 
         # タイトルの設定
@@ -57,61 +79,71 @@ class StartPage:
             command=self.start
         )
 
-        # 配置
+        # -------- 配置 -------- #
         Utils.space(self.frame, 1)
         title_label.pack()
         Utils.space(self.frame, 1)
         description.pack()
         Utils.space(self.frame, 1)
+
+        # ラジオボタン
         for button in select_algorithms_buttons:
             button.pack()
+
         Utils.space(self.frame, 1)
+
+        # スタートボタン
         start_button.pack()
+
         self.frame.grid(row=0, column=0, sticky="nsew")
 
     def start(self):
         Data.algorithm_index = self.selected_algorithm.get()
+        self._next_page()
+
+    def _next_page(self):
+        """
+        次のページを呼び出す
+        """
         Utils.change_page("contents")
 
 
-class ContentsPage:
-    def __init__(self, r):
-        self.frame = Frame(r)
-
+class ContentsPage(Page):
+    """
+    2番目のページ
+    ファイルをロードしてhashの入力を受けてDataクラスへ格納する
+    """
+    def __init__(self, r: Tk):
+        """
+        Args:
+            r(Tk): tk.Tk()で取得できるwindow
+        """
+        super().__init__()
         self.root = r
 
+        # --- パーツ定義 --- #
+        self.frame = Frame(r)
+
+        # ファイル選択
         self.filepath = StringVar()
         self.filepath.set("None is selected")
         self.filepath_label = Label(self.frame, textvariable=self.filepath)
+        self.file_button = Button(self.frame, text="Select", command=self._file_dialog)
 
         plz_choose = Label(self.frame, text="Please select the folder you want us to calculate.")
 
-        # ボタン定義
-        self.file_button = Button(self.frame, text="Select", command=self._file_dialog)
-        self.result_button = Button(
+        # 計算を行うボタン
+        self.calc_button = Button(
             self.frame,
             text="Next",
             command=self._call_calc
         )
 
+        # テキストボックス
         self.text_box = Entry(self.frame, width=100)
         self.text_box.insert(END, "Please enter your hash")
 
-        # 大量のStringVar定義
-        self.result_text = StringVar()
-        self.progress_describer_text = StringVar()
-        self.calculated_hash_text = StringVar()
-        self.user_input_hash_text = StringVar()
-        self.calc_message_text = StringVar()
-
-        # StringVarくんに値をあげる
-        self.progress_describer_text.set(
-            "Calculating the hash with {}".format(algorithmNames[Data.algorithm_index])
-        )
-        self.calc_message_text.set(
-            "Calculating with {}...".format(algorithmNames[Data.algorithm_index])
-        )
-
+        # -------- 配置 -------- #
         Utils.space(self.frame, 3)
         plz_choose.pack()
 
@@ -123,7 +155,7 @@ class ContentsPage:
 
         Utils.space(self.frame, 3)
         self.text_box.pack()
-        self.result_button.pack()
+        self.calc_button.pack()
         self.frame.grid(row=0, column=0, sticky="nsew")
 
     def _file_dialog(self):
@@ -135,30 +167,53 @@ class ContentsPage:
         self.filepath.set(str(filepath))
 
     def _call_calc(self):
+        """
+        StringVarから値を受け取ってhashを計算する
+        """
         input_hash = self.text_box.get()
         error_code, result_hash, checker, error_message = mainCalc(
             self.filepath.get(), input_hash, Data.algorithm_index
         )
-        self.calc_message_text.set("Calculated!")
-        self.progress_describer_text.set(
-            "Calculating the file hash with {} ...".format(algorithmNames[Data.algorithm_index])
-        )
+
+        # hashが入力されなかった場合
         if input_hash == "":
             input_hash = "Please input your hash"
+
+        # Dataクラスくんにぶち込む感じ
         Data.result = result_hash
         Data.user_input_hash = input_hash
         Data.checker = checker
-        if checker:
-            self.result_text.set("Hash is correct.")
-        else:
-            self.result_text.set("ERROR!!! Hash is incorrect!!!!!")
+
+        # 結果を表示する
         Data.pages["result"] = ResultPage(self.root)
+        self._next_page()
+
+    def _next_page(self):
+        """
+        次のページを呼び出す
+        """
         Utils.change_page("result")
 
 
-class ResultPage:
+class ResultPage(Page):
+    """
+    3番目のページ
+    Dataクラスから受け取ったデータを表示する
+    """
     def __init__(self, r: Tk):
+        """
+        Args:
+            r(tk.Tk): tk.Tk()で取得できるwindow
+        """
+        super().__init__()
         self.frame = Frame(r)
+
+        # Label4人集
+        calc_message_label = Label(
+            self.frame,
+            text="Calculated!!!",
+            font=("Meiryo UI", 16, "bold")
+        )
         calculated_hash_label = Label(
             self.frame,
             text="Calculated file hash:\n{}".format(Data.result)
@@ -167,23 +222,22 @@ class ResultPage:
             self.frame,
             text="Entered file hash:\n{}".format(Data.user_input_hash)
         )
-        calc_message_label = Label(
-            self.frame,
-            text="Calculated!!!",
-            font=("Meiryo UI", 16, "bold")
-        )
         result_label = Label(
             self.frame,
             text="Hash is correct." if Data.checker else "ERROR!!! Hash is incorrect!!!!!",
             font=("Meiryo UI", 12, "bold")
         )
 
+        # -------- 配置 -------- #
         Utils.space(self.frame, 5)
         calc_message_label.pack()
         calculated_hash_label.pack()
         user_input_hash_label.pack()
         result_label.pack()
         self.frame.grid(row=0, column=0, sticky="nsew")
+
+    def _next_page(self):
+        pass
 
 
 class Data:
