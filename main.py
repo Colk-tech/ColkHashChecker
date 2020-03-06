@@ -1,232 +1,264 @@
-# -*- coding: utf-8 -*-
-
-import tkinter as tk
-import tkinter.filedialog
 import os
-import tkinter.messagebox
+
+# tkinter関連モジュール
+from tkinter import *
+from tkinter import filedialog
+from tkinter.ttk import *
+
+# 抽象クラス使用
+from abc import ABCMeta, abstractmethod
+
+# 自作モジュール
 from hashcalc import mainCalc
-from tkinter import ttk
 
-filePath = ""
+title = "ColkHashChecker"
 algorithmNames = ["md5", "sha256", "sha512"]
-intAlgorithm = 0
 
 
-def changePage(page):
-    page.tkraise()
+class Root:
+    def __init__(self):
+        # windowの設定
+        self.window = Tk()
+        self.window.title(title)
+        self.window.geometry("460x335")
+        self.window.grid_rowconfigure(0, weight=1)
+        self.window.grid_columnconfigure(0, weight=1)
+
+        # 静的なページを先に初期化
+        Data.pages = {
+            "start" : StartPage(self.window),
+            "contents" : ContentsPage(self.window)
+        }
+
+        # startページを先に呼び出す
+        Data.pages["start"].frame.tkraise()
+        self.window.mainloop()
 
 
-def fileDialog(FP):
-    global filePath
-    fTyp = [("", "*")]
-    iDir = os.path.abspath(os.path.dirname(__file__))
-    filePath = tkinter.filedialog.askopenfilename(
-        filetypes=fTyp, initialdir=iDir)
-    labelChanger(FP, str(filePath))
+class Page(metaclass=ABCMeta):
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def _next_page(self):
+        pass
 
 
-def labelChanger(strObj, changeText):
-    strObj.set(str(changeText))
+class StartPage(Page):
+    """
+    1版最初のページ
+    hashのアルゴリズムを選ぶ場所
+    """
+    def __init__(self, r: Tk):
+        """
+        Args:
+            r(tk.Tk): tk.Tk()で取得できるwindow
+        """
+        super().__init__()
+        self.frame = Frame(r)
+
+        # タイトルの設定
+        title_label_font = ("Meiryo UI", 32, "bold")
+        title_label = Label(self.frame, text=title, font=title_label_font)
+        description = Label(self.frame, text="Please select your desire algorithm to calculate.")
+
+        # アルゴリズム関連
+        self.selected_algorithm = IntVar()
+        self.selected_algorithm.set(0)
+        select_algorithms_buttons = [
+            Radiobutton(self.frame, value=0, variable=self.selected_algorithm, text=algorithmNames[0]),
+            Radiobutton(self.frame, value=1, variable=self.selected_algorithm, text=algorithmNames[1]),
+            Radiobutton(self.frame, value=2, variable=self.selected_algorithm, text=algorithmNames[2])
+        ]
+
+        # 開始ボタン
+        start_button = Button(
+            self.frame,
+            text="Next",
+            command=self.start
+        )
+
+        # -------- 配置 -------- #
+        Utils.space(self.frame, 1)
+        title_label.pack()
+        Utils.space(self.frame, 1)
+        description.pack()
+        Utils.space(self.frame, 1)
+
+        # ラジオボタン
+        for button in select_algorithms_buttons:
+            button.pack()
+
+        Utils.space(self.frame, 1)
+
+        # スタートボタン
+        start_button.pack()
+
+        self.frame.grid(row=0, column=0, sticky="nsew")
+
+    def start(self):
+        Data.algorithm_index = self.selected_algorithm.get()
+        self._next_page()
+
+    def _next_page(self):
+        """
+        次のページを呼び出す
+        """
+        Utils.change_page("contents")
 
 
-def callCalc(page, EditBox, selectedAlgorithm):
-    global filePath, usrHash, intAlgorithm, progressDiscriberText, calcuatedHashText, usrInputHashText, usrInputHashText
-    global resultLabel, C_errorCode, C_hash, C_checker, C_errormsg, contentsPage, calcMsgText, resultText
-    changePage(page)
-    intAlgorithm = int(selectedAlgorithm.get())
-    usrHash = str(EditBox.get())
-    C_errorCode, C_hash, C_checker, C_errormsg = mainCalc(
-        str(filePath), str(usrHash), int(intAlgorithm))
-    calcMsgText.set('Calcuated!')
-    descriptionLabelChanger(progressDiscriberText,
-                            algorithmNames[intAlgorithm])
-    calcuatedHashText.set('''Calculated file hash:
-    ''' + C_hash)
-    usrInputHashText.set('''Entered file hash:
-    ''' + usrHash)
-    if C_checker:
-        resultText.set("Hash is correct.")
-    else:
-        resultText.set("ERROR!!! Hash is not correct!!!!!")
+class ContentsPage(Page):
+    """
+    2番目のページ
+    ファイルをロードしてhashの入力を受けてDataクラスへ格納する
+    """
+    def __init__(self, r: Tk):
+        """
+        Args:
+            r(Tk): tk.Tk()で取得できるwindow
+        """
+        super().__init__()
+        self.root = r
+
+        # --- パーツ定義 --- #
+        self.frame = Frame(r)
+
+        # ファイル選択
+        self.filepath = StringVar()
+        self.filepath.set("None is selected")
+        self.filepath_label = Label(self.frame, textvariable=self.filepath)
+        self.file_button = Button(self.frame, text="Select", command=self._file_dialog)
+
+        plz_choose = Label(self.frame, text="Please select the folder you want us to calculate.")
+
+        # 計算を行うボタン
+        self.calc_button = Button(
+            self.frame,
+            text="Next",
+            command=self._call_calc
+        )
+
+        # テキストボックス
+        self.text_box = Entry(self.frame, width=100)
+        self.text_box.insert(END, "Please enter your hash")
+
+        # -------- 配置 -------- #
+        Utils.space(self.frame, 3)
+        plz_choose.pack()
+
+        Utils.space(self.frame, 3)
+        self.file_button.pack()
+
+        Utils.space(self.frame, 3)
+        self.filepath_label.pack()
+
+        Utils.space(self.frame, 3)
+        self.text_box.pack()
+        self.calc_button.pack()
+        self.frame.grid(row=0, column=0, sticky="nsew")
+
+    def _file_dialog(self):
+        file_type = [("", "*")]
+        initial_dir = os.path.abspath(os.path.dirname(__file__))
+        filepath = filedialog.askopenfilename(
+            filetypes=file_type, initialdir=initial_dir
+        )
+        self.filepath.set(str(filepath))
+
+    def _call_calc(self):
+        """
+        StringVarから値を受け取ってhashを計算する
+        """
+        input_hash = self.text_box.get()
+        error_code, result_hash, checker, error_message = mainCalc(
+            self.filepath.get(), input_hash, Data.algorithm_index
+        )
+
+        # hashが入力されなかった場合
+        if input_hash == "":
+            input_hash = "Please input your hash"
+
+        # Dataクラスくんにぶち込む感じ
+        Data.result = result_hash
+        Data.user_input_hash = input_hash
+        Data.checker = checker
+
+        # 結果を表示する
+        Data.pages["result"] = ResultPage(self.root)
+        self._next_page()
+
+    def _next_page(self):
+        """
+        次のページを呼び出す
+        """
+        Utils.change_page("result")
 
 
-def descriptionLabelChanger(progressDiscriberText, algName):
-    labelChanger(progressDiscriberText,
-                 "Calcuating the file hash with " + algName + "...")
+class ResultPage(Page):
+    """
+    3番目のページ
+    Dataクラスから受け取ったデータを表示する
+    """
+    def __init__(self, r: Tk):
+        """
+        Args:
+            r(tk.Tk): tk.Tk()で取得できるwindow
+        """
+        super().__init__()
+        self.frame = Frame(r)
+
+        # Label4人集
+        calc_message_label = Label(
+            self.frame,
+            text="Calculated!!!",
+            font=("Meiryo UI", 16, "bold")
+        )
+        calculated_hash_label = Label(
+            self.frame,
+            text="Calculated file hash:\n{}".format(Data.result)
+        )
+        user_input_hash_label = Label(
+            self.frame,
+            text="Entered file hash:\n{}".format(Data.user_input_hash)
+        )
+        result_label = Label(
+            self.frame,
+            text="Hash is correct." if Data.checker else "ERROR!!! Hash is incorrect!!!!!",
+            font=("Meiryo UI", 12, "bold")
+        )
+
+        # -------- 配置 -------- #
+        Utils.space(self.frame, 5)
+        calc_message_label.pack()
+        calculated_hash_label.pack()
+        user_input_hash_label.pack()
+        result_label.pack()
+        self.frame.grid(row=0, column=0, sticky="nsew")
+
+    def _next_page(self):
+        pass
 
 
-def main():
-    global filePath
-    global resultLabel
-    global contentsPage
-    window = tk.Tk()
-    window.title("ColkHashChecker")
-    window.geometry("460x335")
+class Data:
+    algorithm_index = 0
+    filepath = ""
+    pages = {}
+    result = ""
+    user_input_hash = ""
+    checker = False
 
-    window.grid_rowconfigure(0, weight=1)
-    window.grid_columnconfigure(0, weight=1)
 
-    # -----------------------------------StartPage---------------------------------
+class Utils:
+    @staticmethod
+    def change_page(page_name: str):
+        Data.pages[page_name].frame.tkraise()
 
-    # StartPage用のFrameを生成
-    startPage = tk.Frame(window)
-
-    # タイトル表示
-    #--- ラベル生成
-    # 空白
-    spaceLabel1 = [tk.Label(startPage, text="") for column in range(1)]
-    spaceLabel2 = [tk.Label(startPage, text="") for column in range(1)]
-    spaceLabel3 = [tk.Label(startPage, text="") for column in range(1)]
-    spaceLabel4 = [tk.Label(startPage, text="") for column in range(1)]
-    # タイトル
-    titleLabelFont = ("Meiryo UI", 32, "bold")
-    titleLabel = ttk.Label(
-        startPage, text="ColkHashChecker", font=titleLabelFont)
-    # 説明文
-    description = ttk.Label(
-        startPage, text="Please select your desire algorithm to calculate.")
-    # アルゴリズム
-    selectedAlgorithm = tkinter.IntVar()
-    selectedAlgorithm.set(0)
-    algorithms =\
-        [tk.Radiobutton(startPage, value=0, variable=selectedAlgorithm, text="MD5"), tk.Radiobutton(
-            startPage, value=1, variable=selectedAlgorithm, text="sha256"), tk.Radiobutton(startPage, value=2, variable=selectedAlgorithm, text="sha512")]
-
-    #--- ラベル配置
-    # 空白
-    for index in range(1):
-        spaceLabel1[index].pack()
-    # タイトル
-    titleLabel.pack()
-    for index in range(1):
-        spaceLabel4[index].pack()
-
-    description.pack()
-
-    for index in range(1):
-        spaceLabel2[index].pack()
-
-    for index in range(3):
-        algorithms[index].pack()
-
-    for index in range(1):
-        spaceLabel3[index].pack()
-
-    # ボタン表示
-    #---  ボタン生成
-    nextButton = ttk.Button(startPage, text="Next",
-                            command=lambda: changePage(contentsPage))
-
-    #---  ボタン配置
-    # ボタン
-    nextButton.pack()
-
-    # StartPageを配置
-    startPage.grid(row=0, column=0, sticky="nsew")
-
-    # -----------------------------------ContentsPage---------------------------------
-    # ContentsPage用のFrameを生成
-    contentsPage = tk.Frame(window)
-
-    # filePathLabelを定義
-    FP = tkinter.StringVar()
-    FP.set("None is selected.")
-    filePathLabel = ttk.Label(contentsPage, textvariable=FP)
-
-    # 空白
-    for n in range(3):
-        ttk.Label(contentsPage, text="").pack()
-
-    # 選択文
-    plzChoose = ttk.Label(
-        contentsPage, text="Please select the folder you want us to calculate.")
-    plzChoose.pack()
-
-    # 空白
-    for n in range(3):
-        ttk.Label(contentsPage, text="").pack()
-
-    # ボタン
-    fileButton = ttk.Button(contentsPage, text="Select",
-                            command=lambda: fileDialog(FP))
-    fileButton.pack()
-
-    # 空白
-    for n in range(3):
-        ttk.Label(contentsPage, text="").pack()
-
-    filePathLabel.pack()
-
-    # 空白
-    for n in range(3):
-        ttk.Label(contentsPage, text="").pack()
-
-    EditBox = tkinter.Entry(contentsPage, width=50)
-    EditBox.insert(tkinter.END, "Please enter your hash")
-    EditBox.pack()
-
-    #---  ボタン生成
-    global progressDiscriberText
-    global calcuatedHashText
-    global usrInputHashText
-    global resultText
-    global calcMsgText
-    resultText = tkinter.StringVar()
-    progressDiscriberText = tkinter.StringVar()
-    progressDiscriberText.set(
-        "Calculating the hash with " + algorithmNames[intAlgorithm] + "...")
-    calcuatedHashText = tkinter.StringVar()
-    usrInputHashText = tkinter.StringVar()
-    calcMsgText = tkinter.StringVar()
-    calcMsgText.set("Calcuating with " +
-                    str(algorithmNames[intAlgorithm]) + "...")
-
-    progressButton = ttk.Button(contentsPage, text="Next", command=lambda: callCalc(
-        progressPage, EditBox, selectedAlgorithm))
-
-    #---  ボタン配置
-    # ボタン
-    progressButton.pack()
-
-    contentsPage.grid(row=0, column=0, sticky="nsew")
-
-    # -----------------------------------ProgressPage---------------------------------
-    # progressPage用のFrameを生成
-    progressPage = tk.Frame(window)
-    filePath = str(FP.get())
-
-    progressLabelFont = ("Meiryo UI", 16, "bold")
-    calcuatedHashLabel = ttk.Label(
-        progressPage, textvariable=calcuatedHashText)
-    usrInputHashLabel = ttk.Label(progressPage, textvariable=usrInputHashText)
-    calcMsgLabel = ttk.Label(
-        progressPage, textvariable=calcMsgText, font=("Meiryo UI", 16, "bold"))
-    resultLabel = ttk.Label(
-        progressPage, textvariable=resultText, font=("Meiryo UI", 12, "bold"))
-
-    # 空白
-    # ---  ラベル生成
-    spaceLabel1 = [tk.Label(progressPage, text="") for column in range(5)]
-    # タイトル
-
-    # ---  ラベル配置
-    # 空白
-    for index in range(5):
-        spaceLabel1[index].pack()
-    # タイトル
-    calcMsgLabel.pack()
-    calcuatedHashLabel.pack()
-    usrInputHashLabel.pack()
-    resultLabel.pack()
-
-    # MainPageを配置
-    progressPage.grid(row=0, column=0, sticky="nsew")
-
-    ###DO NOT CHANGE HERE###
-    startPage.tkraise()
-    window.mainloop()
-    ######
+    @staticmethod
+    def space(frame: Frame, count: int):
+        for _ in range(count):
+            Label(frame, text="").pack()
 
 
 if __name__ == "__main__":
-    main()
+    root = Root()
