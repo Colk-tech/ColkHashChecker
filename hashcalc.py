@@ -10,7 +10,7 @@ errorMsgs = {"00": "#00 正常終了(ハッシュ合致)",
 
 def mainCalc(filePath, currentHash, algorithm):
     import hashlib
-    algorithmNames = ["md5", "sha256", "sha512"]
+    algorithmNames = ["md5", "sha1", "sha256", "sha512"]
     selectedAlgorithm = algorithmNames[int(algorithm)]
     # ハッシュアルゴリズムを決めます
     algo = selectedAlgorithm

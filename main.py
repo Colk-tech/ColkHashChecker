@@ -12,7 +12,7 @@ from abc import ABCMeta, abstractmethod
 from hashcalc import mainCalc
 
 title = "ColkHashChecker"
-algorithmNames = ["md5", "sha256", "sha512"]
+algorithmNames = ["md5", "sha1", "sha256", "sha512"]
 
 
 class Root:
@@ -20,14 +20,14 @@ class Root:
         # windowの設定
         self.window = Tk()
         self.window.title(title)
-        self.window.geometry("460x335")
+        self.window.geometry("460x380")
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
 
         # 静的なページを先に初期化
         Data.pages = {
-            "start" : StartPage(self.window),
-            "contents" : ContentsPage(self.window)
+            "start": StartPage(self.window),
+            "contents": ContentsPage(self.window)
         }
 
         # startページを先に呼び出す
@@ -50,6 +50,7 @@ class StartPage(Page):
     1版最初のページ
     hashのアルゴリズムを選ぶ場所
     """
+
     def __init__(self, r: Tk):
         """
         Args:
@@ -67,9 +68,8 @@ class StartPage(Page):
         self.selected_algorithm = IntVar()
         self.selected_algorithm.set(0)
         select_algorithms_buttons = [
-            Radiobutton(self.frame, value=0, variable=self.selected_algorithm, text=algorithmNames[0]),
-            Radiobutton(self.frame, value=1, variable=self.selected_algorithm, text=algorithmNames[1]),
-            Radiobutton(self.frame, value=2, variable=self.selected_algorithm, text=algorithmNames[2])
+            Radiobutton(self.frame, value=i, variable=self.selected_algorithm, text=algorithmNames[i]) for i in
+            range(0, 4)
         ]
 
         # 開始ボタン
@@ -113,6 +113,7 @@ class ContentsPage(Page):
     2番目のページ
     ファイルをロードしてhashの入力を受けてDataクラスへ格納する
     """
+
     def __init__(self, r: Tk):
         """
         Args:
@@ -200,6 +201,7 @@ class ResultPage(Page):
     3番目のページ
     Dataクラスから受け取ったデータを表示する
     """
+
     def __init__(self, r: Tk):
         """
         Args:
